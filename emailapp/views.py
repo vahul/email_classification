@@ -114,7 +114,7 @@ def signup_view(request):
 
 
 def home_view(request):
-    return render(request, 'emailapp/home.html')
+    return render(request, 'emailapp/index.html')
 
 
 def classify_view(request):

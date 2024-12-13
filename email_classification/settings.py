@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'email_classification.wsgi.app'
+WSGI_APPLICATION = 'email_classification.wsgi.application'
 
 
 # Database

@@ -45,7 +45,8 @@ def summarize(text):
 
 # Fetch today's emails
 def get_todays_emails(service):
-    today_midnight = (datetime.now() - timedelta(hours=9)).replace(hour=0, minute=0, second=0, microsecond=0)
+    today_midnight = (datetime.now() - timedelta(hours=8)).replace(hour=0, minute=0, second=0, microsecond=0)
+    print(today_midnight)    
     query = f"after:{int(today_midnight.timestamp())}"
     try:
         results = service.users().messages().list(userId='me', q=query).execute()

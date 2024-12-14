@@ -38,6 +38,7 @@ numpy==1.26.4
 packaging==24.0
 preshed==3.0.9
 pydantic==2.7.1
+pytz
 pydantic_core==2.18.2
 requests==2.31.0
 smart-open==6.4.0

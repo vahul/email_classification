@@ -19,13 +19,25 @@ llm = ChatGroq(
         temperature=0,
         groq_api_key='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'
     )
-
+def count_tokens(text):
+    # Tokenize using OpenAI's tokenizer or a simple approximation (e.g., space-separated words)
+    return len(text.split())
 # Configure ChatGroq
 def classify_email(email):
-    query = f"What class does this email belong to in the classes Finance, Social, News, Health, Promotions, Job Offers just give me the name ? Email: {email}"
+    token_limit = 6000
+
+    # Estimate the number of tokens in the email
+    email_tokens = count_tokens(email)
+
+    # If the email exceeds the token limit, truncate it
+    if email_tokens > token_limit:
+        # Truncate the email to fit within the token limit
+        truncated_email = ' '.join(email.split()[:token_limit])
+    else:
+        truncated_email = email
+    query = f"What class does this email belong to in the classes Finance, Social, News, Health, Promotions, Job Offers just give me the name ? Email: {truncated_email}"
     response = llm.invoke(query)
     return response.content
-
 
 # Get Gmail service
 def get_gmail_service():

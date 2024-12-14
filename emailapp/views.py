@@ -74,7 +74,7 @@ def summarize(text):
 def get_todays_emails(service):
     ist = pytz.timezone('Asia/Kolkata')    
     now_ist = datetime.now(ist)
-    today_midnight_ist = now_ist.replace(hour=0, minute=0, second=0, microsecond=0) 
+    today_midnight = now_ist.replace(hour=0, minute=0, second=0, microsecond=0) 
     print(today_midnight)    
     query = f"after:{int(today_midnight.timestamp())}"
     try:

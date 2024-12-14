@@ -27,7 +27,7 @@ def count_tokens(text):
     return len(text.split())
 # Configure ChatGroq
 def classify_email(email, retries=3):
-    token_limit = 6000
+    token_limit = 4000
 
     # Estimate the number of tokens in the email
     email_tokens = count_tokens(email)

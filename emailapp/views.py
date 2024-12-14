@@ -26,32 +26,35 @@ def count_tokens(text):
     return len(text.split())
 # Configure ChatGroq
 def classify_email(email, retries=3):
-    token_limit = 6000
+    # token_limit = 6000
 
-    # Estimate the number of tokens in the email
-    email_tokens = count_tokens(email)
+    # # Estimate the number of tokens in the email
+    # email_tokens = count_tokens(email)
 
-    # If the email exceeds the token limit, truncate it
-    if email_tokens > token_limit:
-        # Truncate the email to fit within the token limit
-        truncated_email = ' '.join(email.split()[:token_limit])
-    else:
-        truncated_email = email
+    # # If the email exceeds the token limit, truncate it
+    # if email_tokens > token_limit:
+    #     # Truncate the email to fit within the token limit
+    #     truncated_email = ' '.join(email.split()[:token_limit])
+    # else:
+    #     truncated_email = email
 
     query = f"What class does this email belong to in the classes Finance, Social, News, Health, Promotions, Job Offers just give me the name ? Email: {truncated_email}"
 
-    for attempt in range(retries):
-        try:
-            time.sleep(1)  # Add a delay between API calls
-            response = llm.invoke(query)
-            return response.content
-        except httpx.HTTPStatusError as e:
-            if e.response.status_code == 429:
-                print("Rate limit hit. Retrying...")
-                time.sleep(2 ** attempt)  # Exponential backoff
-            else:
-                raise
-    raise Exception("Max retries reached")
+    # for attempt in range(retries):
+    #     try:
+    #         time.sleep(1)  # Add a delay between API calls
+    #         response = llm.invoke(query)
+    #         return response.content
+    #     except httpx.HTTPStatusError as e:
+    #         if e.response.status_code == 429:
+    #             print("Rate limit hit. Retrying...")
+    #             time.sleep(2 ** attempt)  # Exponential backoff
+    #         else:
+    #             raise
+    # raise Exception("Max retries reached")
+    response=llm.invoke(query)
+    time.sleep(1)
+    return response.content    
 
 
 # Get Gmail service

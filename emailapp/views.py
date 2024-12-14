@@ -7,12 +7,15 @@ from django.contrib.auth import login, authenticate
 from django.http import HttpResponse
 import os
 import base64
+import pytz
 from datetime import datetime,timedelta
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from bs4 import BeautifulSoup
 from langchain_groq import ChatGroq
+import httpx
+import time
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 llm = ChatGroq(
         model="llama-3.1-70b-versatile",
@@ -23,7 +26,7 @@ def count_tokens(text):
     # Tokenize using OpenAI's tokenizer or a simple approximation (e.g., space-separated words)
     return len(text.split())
 # Configure ChatGroq
-def classify_email(email):
+def classify_email(email, retries=3):
     token_limit = 6000
 
     # Estimate the number of tokens in the email
@@ -35,9 +38,21 @@ def classify_email(email):
         truncated_email = ' '.join(email.split()[:token_limit])
     else:
         truncated_email = email
+    
     query = f"What class does this email belong to in the classes Finance, Social, News, Health, Promotions, Job Offers just give me the name ? Email: {truncated_email}"
-    response = llm.invoke(query)
-    return response.content
+
+    for attempt in range(retries):
+        try:
+            time.sleep(1)  # Add a delay between API calls
+            response = llm.invoke(query)
+            return response.content
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 429:
+                print("Rate limit hit. Retrying...")
+                time.sleep(2 ** attempt)  # Exponential backoff
+            else:
+                raise
+    raise Exception("Max retries reached")
 
 # Get Gmail service
 def get_gmail_service():
@@ -57,7 +72,9 @@ def summarize(text):
 
 # Fetch today's emails
 def get_todays_emails(service):
-    today_midnight = (datetime.now() - timedelta(hours=8)).replace(hour=0, minute=0, second=0, microsecond=0)
+    ist = pytz.timezone('Asia/Kolkata')    
+    now_ist = datetime.now(ist)
+    today_midnight_ist = now_ist.replace(hour=0, minute=0, second=0, microsecond=0) 
     print(today_midnight)    
     query = f"after:{int(today_midnight.timestamp())}"
     try:

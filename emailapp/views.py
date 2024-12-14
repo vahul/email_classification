@@ -38,7 +38,7 @@ def classify_email(email, retries=3):
     # else:
     #     truncated_email = email
 
-    query = f"What class does this email belong to in the classes Finance, Social, News, Health, Promotions, Job Offers just give me the name ? Email: {truncated_email}"
+    query = f"What class does this email belong to in the classes Finance, Social, News, Health, Promotions, Job Offers just give me the name ? Email: {email}"
 
     # for attempt in range(retries):
     #     try:

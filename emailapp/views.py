@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+import pytz
 # Create your views here.
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
@@ -75,8 +75,11 @@ def summarize(text):
 
 # Fetch today's emails
 def get_todays_emails(service):
-    today_midnight = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    query = f"after:{int(today_midnight.timestamp())}"
+    #today_midnight = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    #query = f"after:{int(today_midnight.timestamp())}"
+    ist = pytz.timezone('Asia/Kolkata')
+    today_midnight = datetime.now(ist).replace(hour=0, minute=0, second=0, microsecond=0)
+    query = f"after: {int(today_midnight.timestamp())}"    
     try:
         results = service.users().messages().list(userId='me', q=query).execute()
         messages = results.get('messages', [])
